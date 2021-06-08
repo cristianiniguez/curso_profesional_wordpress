@@ -19,6 +19,12 @@ span,
 ul {
   font-family: Montserrat;
 }
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
 .attachment-large {
   max-width: 100%;
   height: auto !important;

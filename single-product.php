@@ -1,11 +1,10 @@
 <?php get_header(); ?>
 
 <main class="container my-3">
-  <?php
-  if (have_posts()) {
-    while (have_posts()) {
-      the_post();
-  ?>
+  <?php if (have_posts()) { ?>
+    <?php while (have_posts()) { ?>
+      <?php the_post(); ?>
+      <?php $taxonomy = get_the_terms(get_the_ID(), 'category-products'); ?>
       <h1 class="my-3">
         <?php the_title(); ?>
       </h1>
@@ -17,15 +16,24 @@
           <?php the_content(); ?>
         </div>
       </div>
+
       <?php
       $args = array(
         'post_type' => 'product',
         'post_per_page' => 6,
         'order' => 'ASC',
-        'orderby' => 'title'
+        'orderby' => 'title',
+        'tax_query' => array(
+          array(
+            'taxonomy' => 'category-products',
+            'field' => 'slug',
+            'terms' => $taxonomy[0]->slug
+          )
+        )
       );
       $products = new WP_Query($args);
       ?>
+
       <?php if ($products->have_posts()) { ?>
         <h3 class="text-center">Productos relacionados</h3>
         <div class="row justify-content-center productos-relacionados">

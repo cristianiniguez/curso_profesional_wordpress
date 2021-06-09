@@ -10,10 +10,10 @@
       while (have_posts()) {
         the_post();
     ?>
-        <div class="col-4 text-center-single-archive">
+        <div class="col-4 text-center single-archive">
           <a href="<?php the_permalink(); ?>">
             <?php the_post_thumbnail('large'); ?>
-            <h4><?php the_title(); ?></h4>
+            <h4 class="my-2"><?php the_title(); ?></h4>
           </a>
         </div>
     <?php

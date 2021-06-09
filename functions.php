@@ -65,3 +65,20 @@ function products_type()
 }
 
 add_action('init', 'products_type');
+
+function pgRegisterTax()
+{
+  $args = array(
+    'hierarchical' => true,
+    'labels' => array(
+      'name' => 'Categorías de Productos',
+      'singular_name' => 'Categoría de Productos'
+    ),
+    'show_in_nav_menu' => true,
+    'show_admin_column' => true,
+    'rewrite' => array('slug' => 'category-products')
+  );
+  register_taxonomy('category-products', array('product'), $args);
+}
+
+add_action('init', 'pgRegisterTax');

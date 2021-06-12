@@ -28,7 +28,7 @@
         </select>
       </div>
     </div>
-    <div class="row justify-content-center">
+    <div id="result-products" class="row justify-content-center">
       <?php
       $args = array(
         'post_type' => 'product',

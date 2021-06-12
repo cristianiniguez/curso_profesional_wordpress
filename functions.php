@@ -22,6 +22,9 @@ function assets()
   wp_register_script('bootstrapjs', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js', 'popper', '5.0.1', true);
 
   wp_enqueue_script('custom', get_template_directory_uri() . '/assets/js/custom.js', '', '1.0.0', true);
+  wp_localize_script('custom', 'pg', array(
+    'ajaxurl' => admin_url('admin-ajax.php')
+  ));
 }
 
 add_action('wp_enqueue_scripts', 'assets');
@@ -83,3 +86,43 @@ function pgRegisterTax()
 }
 
 add_action('init', 'pgRegisterTax');
+
+function pgFilterProducts()
+{
+  $args = array(
+    'post_type' => 'product',
+    'post_per_page' => -1,
+    'order' => 'ASC',
+    'orderby' => 'title'
+  );
+
+  if ($_POST['category']) {
+    $args['tax_query'] = array(
+      array(
+        'taxonomy' => 'category-products',
+        'field' => 'slug',
+        'terms' => $_POST['category']
+      )
+    );
+  }
+
+  $products = new WP_Query($args);
+
+  if ($products->have_posts()) {
+    $return = array();
+
+    while ($products->have_posts()) {
+      $products->the_post();
+      $return[] = array(
+        'image' => get_the_post_thumbnail(get_the_id(), 'large'),
+        'link' => get_the_permalink(),
+        'title' => get_the_title(),
+      );
+    }
+
+    wp_send_json($return);
+  }
+}
+
+add_action('wp_ajax_pgFilterProducts', 'pgFilterProducts');
+add_action('wp_ajax_nopriv_pgFilterProducts', 'pgFilterProducts');

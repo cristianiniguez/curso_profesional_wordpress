@@ -26,5 +26,5 @@ registerBlockType('pg/basic', {
 
     return <TextControl label='Complete el campo' value={content} onChange={handleOnChangeInput} />;
   },
-  save: (props) => <h2>{props.attributes.content}</h2>,
+  save: () => null,
 });

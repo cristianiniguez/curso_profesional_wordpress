@@ -169,6 +169,11 @@ function novedadesAPI()
 
 add_action('rest_api_init', 'novedadesAPI');
 
+function pgRenderDynamicBlock($attributes, $content)
+{
+  return '<h2>' . $attributes['content'] . '</h2>';
+}
+
 function pgRegisterBlocks()
 {
   $assets = include_once get_template_directory() . '/blocks/build/index.asset.php';
@@ -178,7 +183,13 @@ function pgRegisterBlocks()
     $assets['dependencies'],
     $assets['version']
   );
-  register_block_type('pg/basic', array('editor_script' => 'pg-block'));
+  register_block_type(
+    'pg/basic',
+    array(
+      'editor_script' => 'pg-block',
+      'render_callback', 'pgRenderDynamicBlock'
+    )
+  );
 }
 
 add_action('init', 'pgRegisterBlocks');

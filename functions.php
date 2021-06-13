@@ -126,3 +126,44 @@ function pgFilterProducts()
 
 add_action('wp_ajax_pgFilterProducts', 'pgFilterProducts');
 add_action('wp_ajax_nopriv_pgFilterProducts', 'pgFilterProducts');
+
+function pedidoNovedades($data)
+{
+  $args = array(
+    'post_type' => 'post',
+    'post_per_page' => $data['cantidad'],
+    'order' => 'ASC',
+    'orderby' => 'title'
+  );
+
+  $novedades = new WP_Query($args);
+
+  if ($novedades->have_posts()) {
+    $return = array();
+
+    while ($novedades->have_posts()) {
+      $novedades->the_post();
+      $return[] = array(
+        'image' => get_the_post_thumbnail(get_the_id(), 'large'),
+        'link' => get_the_permalink(),
+        'title' => get_the_title(),
+      );
+    }
+
+    return $return;
+  }
+}
+
+function novedadesAPI()
+{
+  register_rest_route(
+    'pg/v1',
+    '/novedades/(?P<cantidad>\d+)',
+    array(
+      'methods' => 'GET',
+      'callback' => 'pedidoNovedades'
+    )
+  );
+}
+
+add_action('rest_api_init', 'novedadesAPI');
